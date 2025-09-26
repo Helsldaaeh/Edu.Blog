@@ -19,7 +19,7 @@
                 {% for post in posts %}
                     <tr>
                         <th scope="row">{{ post.id }}</th>
-                        <td>{{ post.title }}</td>
+                        <td><a href="(% url 'retrieve' post.id %)">{{ post.title }} </a></td>
                         <td>{{ post.content }}</td>
                         <td>{{ post.author }}</td>
                         <td>{{ post.created_at }}</td>

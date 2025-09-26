@@ -1,0 +1,12 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+    <h1>Удалить пост</h1>
+    <p>Вы уверены, что хотите удалить пост {{post.title}}?</p>
+
+    <form method="post">
+        (%csrf token%)
+        <button type="submit">Удалить</button>
+        <a href="(% url 'retrieve' post.id %)">Да</a>
+    </form>
+{% endblock %}
