@@ -51,7 +51,7 @@ def delete(request:HttpRequest, post_id:int) -> HttpResponse:
     post = get_object_or_404(Post, id=post_id)
 
     if (post.author != request.user): return HttpResponseForbidden('Вы не имеете права')
-    
+
     if (request.method == 'POST'):
         post.delete()
         return redirect('posts')
@@ -108,3 +108,5 @@ def register_view(request: HttpRequest) -> HttpResponse:
 #python manage.py createsuperuser
 #username: root
 #password: root
+#user = objects.create_user(username='some name', password='some password')
+#user = objects.create_post(title='some title', text='some text', author = user)
