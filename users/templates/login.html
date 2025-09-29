@@ -6,6 +6,8 @@
         {{form.as_p}}
         <button type="submit">Войти</button>
     </form>
+
+    <p>Нет акканта? <a href="{% url 'users.register' %}">Регистрация</a></p>
     {% if form.errors %}
     <p style="color: red">неверное имя пользователя, или пароль</p>
     {% endif %}

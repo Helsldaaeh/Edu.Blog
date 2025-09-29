@@ -1,5 +1,5 @@
 from django.db import models
-
+from users import User
 
 class Post(models.Model):
     title = models.CharField(
@@ -17,7 +17,9 @@ class Post(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True,
     )
-
+    author = models.ForeignKey(
+        to=User
+    )
     def __str__(self):
         return self.title
 

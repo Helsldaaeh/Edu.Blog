@@ -12,5 +12,8 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('about/', views.about, name='about'),
     #path('login/', auth_views.LoginView.as_view(template_name='posts/login.hrml'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout')
+    #path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('profile/', views.profile, name='profle'),
+    path('login/', views.login, name='login'),
+    path('logout/', views.logout, name='logout')
 ]

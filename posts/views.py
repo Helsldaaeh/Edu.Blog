@@ -1,11 +1,10 @@
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django import get_object_or_404
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from posts.forms import PostForm
 from posts.models import Post
-from forms import UserForm
+from django.contrib.auth.decorators import login_required
 
 
 def post(request: HttpRequest) -> HttpResponse:
@@ -33,6 +32,7 @@ def retrieve(request: HttpRequest, post_id:int) -> HttpResponse:
 
 def update(request: HttpRequest, post_id:int) -> HttpResponse:
     post = get_object_or_404(Post, id=post_id)
+    if (post.author != request.user): return HttpResponseForbidden('Вы не имеете права')
     if (request.method == 'POST'):
         form = PostForm(request.POST)
         if (form.is_valid()):
@@ -49,6 +49,9 @@ def update(request: HttpRequest, post_id:int) -> HttpResponse:
 
 def delete(request:HttpRequest, post_id:int) -> HttpResponse:
     post = get_object_or_404(Post, id=post_id)
+
+    if (post.author != request.user): return HttpResponseForbidden('Вы не имеете права')
+    
     if (request.method == 'POST'):
         post.delete()
         return redirect('posts')
@@ -58,7 +61,7 @@ def delete(request:HttpRequest, post_id:int) -> HttpResponse:
 def about(request: HttpRequest) -> HttpResponse:
     return render(request, 'posts/about.html', {'title': 'About us'})
 
-def login(request: HttpRequest) -> HttpResponse:
+def login_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = UserForm(request.Post)
         if form.is_valid():
@@ -77,3 +80,31 @@ def login(request: HttpRequest) -> HttpResponse:
     else:
         form = UserForm()
     return render(request, 'posts/login.html', {'form':form})
+
+def logout_view(request: HttpRequest) -> HttpResponse:
+    logout(request)
+    return redirect('login')
+@login_required
+def profile_view(request: HttpRequest) -> HttpResponse:
+    return render(request, 'posts/profile.html', {'user':request.user})
+
+def register_view(request: HttpRequest) -> HttpResponse:
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            author = request.user
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Пользователь с таким именем уже существует')
+            else:
+                User.objects.create_user(username=username, password=password)
+                return redirect('users.login')
+    else:
+        form = UserForm()
+    return render(request, 'users/register.html', {'form,':form})
+#python manage.py makemigration
+#python manage.py migrate
+#python manage.py createsuperuser
+#username: root
+#password: root

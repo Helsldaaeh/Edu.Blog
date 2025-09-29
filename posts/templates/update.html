@@ -2,6 +2,6 @@
 
  {% block content %}
     <h1>Обновить пост</h1>
-    (% csrf)
+    {% csrf_token %}
     <form method="post"></form>
  {% endblock %}
